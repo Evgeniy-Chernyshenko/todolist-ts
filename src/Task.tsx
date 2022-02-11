@@ -1,19 +1,30 @@
 import React, { ChangeEvent } from "react";
-import { ChangeTaskStatusType, RemoveTaskType, TaskType } from "./App";
+import { TaskType } from "./App";
+import { Button } from "./Button";
+import { EditableItem, OnChangeItemTitleCallback } from "./EditableItem";
+import {
+  ChangeTaskStatusCallBackType,
+  ChangeTaskTitleCallbackType,
+  RemoveTaskCallbackType,
+} from "./TodoList";
 
 type TaskPropsType = TaskType & {
-  todoListId: string;
-  changeTaskStatus: ChangeTaskStatusType;
-  removeTask: RemoveTaskType;
+  changeTaskStatusCallback: ChangeTaskStatusCallBackType;
+  removeTaskCallback: RemoveTaskCallbackType;
+  changeTaskTitleCallback: ChangeTaskTitleCallbackType;
 };
 
 export const Task = (props: TaskPropsType) => {
   const onChangeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    props.changeTaskStatus(props.todoListId, props.id, e.currentTarget.checked);
+    props.changeTaskStatusCallback(props.id, e.currentTarget.checked);
   };
 
   const onClickRemoveTaskHandler = () => {
-    props.removeTask(props.todoListId, props.id);
+    props.removeTaskCallback(props.id);
+  };
+
+  const onChangeTitleCallback: OnChangeItemTitleCallback = (title) => {
+    props.changeTaskTitleCallback(props.id, title);
   };
 
   return (
@@ -23,8 +34,12 @@ export const Task = (props: TaskPropsType) => {
         checked={props.isDone}
         onChange={onChangeTaskStatusHandler}
       />
-      <span className={props.isDone ? "isDone" : ""}>{props.title}</span>{" "}
-      <button onClick={onClickRemoveTaskHandler}>x</button>
+      <EditableItem
+        className={props.isDone ? "isDone" : ""}
+        title={props.title}
+        onChangeItemTitleCallback={onChangeTitleCallback}
+      />{" "}
+      <Button onClick={onClickRemoveTaskHandler}>x</Button>
     </li>
   );
 };
