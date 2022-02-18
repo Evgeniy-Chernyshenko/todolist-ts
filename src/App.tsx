@@ -1,10 +1,22 @@
-import React, { useState } from "react";
-import { v1 } from "uuid";
-import "./App.css";
-import { TodoList } from "./TodoList";
-import { AddItemForm } from "./AddItemForm";
+import React, { useState } from 'react';
+import { v1 } from 'uuid';
+import { TodoList } from './TodoList';
+import { AddItemForm } from './AddItemForm';
+import {
+  AppBar,
+  Button,
+  Container,
+  CssBaseline,
+  Grid,
+  IconButton,
+  Toolbar,
+  Typography,
+} from '@mui/material';
+import { DarkMode, LightMode, Menu } from '@mui/icons-material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Box } from '@mui/system';
 
-export type FilterValueType = "all" | "active" | "completed";
+export type FilterValueType = 'all' | 'active' | 'completed';
 
 type TodoListType = {
   id: string;
@@ -55,23 +67,23 @@ function App() {
   const todoListId2 = v1();
 
   const [todoLists, setTodoLists] = useState<TodoListType[]>([
-    { id: todoListId1, title: "What to learn", filterValue: "all" },
-    { id: todoListId2, title: "What to buy", filterValue: "all" },
+    { id: todoListId1, title: 'What to learn', filterValue: 'all' },
+    { id: todoListId2, title: 'What to buy', filterValue: 'all' },
   ]);
   const [tasks, setTasks] = useState<TasksType>({
     [todoListId1]: [
-      { id: v1(), title: "HTML&CSS", isDone: true },
-      { id: v1(), title: "JS", isDone: true },
-      { id: v1(), title: "React", isDone: false },
-      { id: v1(), title: "Redux", isDone: false },
+      { id: v1(), title: 'HTML&CSS', isDone: true },
+      { id: v1(), title: 'JS', isDone: true },
+      { id: v1(), title: 'React', isDone: false },
+      { id: v1(), title: 'Redux', isDone: false },
     ],
     [todoListId2]: [
-      { id: v1(), title: "Bread", isDone: true },
-      { id: v1(), title: "Butter", isDone: true },
-      { id: v1(), title: "Laptop", isDone: false },
-      { id: v1(), title: "Elephant", isDone: false },
+      { id: v1(), title: 'Bread', isDone: true },
+      { id: v1(), title: 'Laptop', isDone: false },
+      { id: v1(), title: 'Elephant', isDone: false },
     ],
   });
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
 
   const removeTask: RemoveTaskType = (todoListId, taskId) => {
     setTasks({
@@ -123,11 +135,11 @@ function App() {
   };
 
   const getFilteredTasks = (todoList: TodoListType) => {
-    if (todoList.filterValue === "active") {
+    if (todoList.filterValue === 'active') {
       return tasks[todoList.id].filter((t) => !t.isDone);
     }
 
-    if (todoList.filterValue === "completed") {
+    if (todoList.filterValue === 'completed') {
       return tasks[todoList.id].filter((t) => t.isDone);
     }
 
@@ -135,13 +147,15 @@ function App() {
   };
 
   const removeTodoList: RemoveTodoListType = (id) => {
+    console.log('removeTodoList');
+
     setTodoLists(todoLists.filter((tl) => tl.id !== id));
   };
 
   const addTodoList = (title: string) => {
     const id = v1();
 
-    setTodoLists([...todoLists, { id, title, filterValue: "all" }]);
+    setTodoLists([{ id, title, filterValue: 'all' }, ...todoLists]);
 
     setTasks({ ...tasks, [id]: [] });
   };
@@ -163,13 +177,55 @@ function App() {
     />
   ));
 
+  const lightTheme = createTheme();
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: 'dark',
+    },
+  });
+
   return (
-    <div className="App">
-      <div>
+    <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
+      <CssBaseline />
+      <AppBar position="static">
+        <Toolbar>
+          <Box sx={{ flexGrow: 1, justifyContent: 'left' }}>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+            >
+              <Menu />
+            </IconButton>
+          </Box>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, textAlign: 'center' }}
+          >
+            TodoList app
+          </Typography>
+          <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
+            <IconButton onClick={() => setIsDarkTheme(!isDarkTheme)}>
+              {isDarkTheme ? (
+                <LightMode />
+              ) : (
+                <DarkMode sx={{ color: '#ffffff' }} />
+              )}
+            </IconButton>
+            <Button color="inherit">Login</Button>
+          </Box>
+        </Toolbar>
+      </AppBar>
+      <Container sx={{ mt: '40px', mb: '40px' }}>
         <AddItemForm onAddItemCallback={addTodoList} />
-      </div>
-      {todoListsComponents}
-    </div>
+        <Grid container spacing="40px" sx={{ mt: '0px' }}>
+          {todoListsComponents}
+        </Grid>
+      </Container>
+    </ThemeProvider>
   );
 }
 

@@ -1,34 +1,40 @@
-import React from "react";
-import { Button } from "./Button";
-import { OnClickFilterButtonCallbackType } from "./TodoList";
-import { FilterValueType } from "./App";
+import React from 'react';
+// import { Button } from "./Button";
+import { OnClickFilterButtonCallbackType } from './TodoList';
+import { FilterValueType } from './App';
+import { ButtonGroup, Button } from '@mui/material';
 
 type ButtonsPanelPropsType = {
   filterValue: FilterValueType;
   onClickFilterButtonCallback: OnClickFilterButtonCallbackType;
 };
 
+const activeButtonParams = {
+  variant: 'contained',
+  color: 'error',
+} as const;
+
 export const ButtonsPanel = (props: ButtonsPanelPropsType) => {
   return (
-    <div>
+    <ButtonGroup fullWidth>
       <Button
-        isActive={props.filterValue === "all"}
-        onClick={props.onClickFilterButtonCallback("all")}
+        {...(props.filterValue === 'all' && activeButtonParams)}
+        onClick={props.onClickFilterButtonCallback('all')}
       >
         All
       </Button>
       <Button
-        isActive={props.filterValue === "active"}
-        onClick={props.onClickFilterButtonCallback("active")}
+        {...(props.filterValue === 'active' && activeButtonParams)}
+        onClick={props.onClickFilterButtonCallback('active')}
       >
         Active
       </Button>
       <Button
-        isActive={props.filterValue === "completed"}
-        onClick={props.onClickFilterButtonCallback("completed")}
+        {...(props.filterValue === 'completed' && activeButtonParams)}
+        onClick={props.onClickFilterButtonCallback('completed')}
       >
         Completed
       </Button>
-    </div>
+    </ButtonGroup>
   );
 };

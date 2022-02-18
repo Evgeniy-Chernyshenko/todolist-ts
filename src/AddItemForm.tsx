@@ -1,13 +1,14 @@
-import React, { ChangeEvent, KeyboardEvent, useState } from "react";
-import { OnAddItemCallbackType } from "./TodoList";
-import { Button } from "./Button";
+import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
+import { OnAddItemCallbackType } from './TodoList';
+import { IconButton, InputAdornment, TextField } from '@mui/material';
+import { Add } from '@mui/icons-material';
 
 type AddItemFormPropsType = {
   onAddItemCallback: OnAddItemCallbackType;
 };
 
 export const AddItemForm = (props: AddItemFormPropsType) => {
-  const [itemTitle, setItemTitle] = useState<string>("");
+  const [itemTitle, setItemTitle] = useState<string>('');
   const [hasError, setHasError] = useState<boolean>(false);
 
   const addItem = (title: string) => {
@@ -19,7 +20,7 @@ export const AddItemForm = (props: AddItemFormPropsType) => {
       setHasError(true);
     }
 
-    setItemTitle("");
+    setItemTitle('');
   };
 
   const onChangeItemTitleHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +29,7 @@ export const AddItemForm = (props: AddItemFormPropsType) => {
   };
 
   const onKeyPressItemTitleHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-    e.key === "Enter" && addItem(itemTitle);
+    e.key === 'Enter' && addItem(itemTitle);
   };
 
   const onClickAddTaskHandler = () => {
@@ -37,14 +38,27 @@ export const AddItemForm = (props: AddItemFormPropsType) => {
 
   return (
     <>
-      <input
+      <TextField
         onChange={onChangeItemTitleHandler}
         onKeyPress={onKeyPressItemTitleHandler}
+        onBlur={() => setHasError(false)}
         value={itemTitle}
-        className={hasError ? "error" : ""}
+        error={hasError}
+        label={hasError ? 'Title is required' : 'Type your title'}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={onClickAddTaskHandler}>
+                <Add />
+              </IconButton>
+            </InputAdornment>
+          ),
+
+          sx: { pr: 0 },
+        }}
+        fullWidth
+        size="small"
       />
-      <Button onClick={onClickAddTaskHandler}>+</Button>
-      {hasError && <div className={"errorMessage"}>Name is required</div>}
     </>
   );
 };

@@ -1,17 +1,19 @@
-import React, { ChangeEvent } from "react";
-import { TaskType } from "./App";
-import { Button } from "./Button";
-import { EditableItem, OnChangeItemTitleCallback } from "./EditableItem";
+import { DeleteOutline } from '@mui/icons-material';
+import { Checkbox, IconButton, ListItem, Typography } from '@mui/material';
+import React, { ChangeEvent } from 'react';
+import { TaskType } from './App';
+import { EditableItem, OnChangeItemTitleCallback } from './EditableItem';
 import {
   ChangeTaskStatusCallBackType,
   ChangeTaskTitleCallbackType,
   RemoveTaskCallbackType,
-} from "./TodoList";
+} from './TodoList';
 
 type TaskPropsType = TaskType & {
   changeTaskStatusCallback: ChangeTaskStatusCallBackType;
   removeTaskCallback: RemoveTaskCallbackType;
   changeTaskTitleCallback: ChangeTaskTitleCallbackType;
+  isLast: boolean;
 };
 
 export const Task = (props: TaskPropsType) => {
@@ -28,18 +30,24 @@ export const Task = (props: TaskPropsType) => {
   };
 
   return (
-    <li key={props.id}>
-      <input
-        type="checkbox"
-        checked={props.isDone}
-        onChange={onChangeTaskStatusHandler}
-      />
-      <EditableItem
-        className={props.isDone ? "isDone" : ""}
-        title={props.title}
-        onChangeItemTitleCallback={onChangeTitleCallback}
-      />{" "}
-      <Button onClick={onClickRemoveTaskHandler}>x</Button>
-    </li>
+    <ListItem
+      key={props.id}
+      divider
+      {...{
+        sx: { pl: 0, pr: 0, ...(props.isLast && { border: 'none' }) },
+      }}
+    >
+      <Checkbox checked={props.isDone} onChange={onChangeTaskStatusHandler} />
+      <Typography sx={{ flexGrow: 1, wordBreak: 'break-all' }}>
+        <EditableItem
+          className={props.isDone ? 'isDone' : ''}
+          title={props.title}
+          onChangeItemTitleCallback={onChangeTitleCallback}
+        />
+      </Typography>
+      <IconButton onClick={onClickRemoveTaskHandler}>
+        <DeleteOutline />
+      </IconButton>
+    </ListItem>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   TaskType,
   FilterValueType,
@@ -9,11 +9,12 @@ import {
   AddTaskType,
   ChangeFilterValueType,
   ChangeTodoListTitleType,
-} from "./App";
-import { Header } from "./Header";
-import { Task } from "./Task";
-import { AddItemForm } from "./AddItemForm";
-import { ButtonsPanel } from "./ButtonsPanel";
+} from './App';
+import { Header } from './Header';
+import { Task } from './Task';
+import { AddItemForm } from './AddItemForm';
+import { ButtonsPanel } from './ButtonsPanel';
+import { Box, Grid, List, Paper } from '@mui/material';
 
 type TodoListPropsType = {
   id: string;
@@ -87,32 +88,47 @@ export const TodoList = (props: TodoListPropsType) => {
   };
 
   return (
-    <div>
-      <Header
-        headerText={props.headerText}
-        removeTodoListCallback={removeTodoListCallback}
-        changeTodoListTitleCallback={changeTodoListTitleCallback}
-      />
-      <div>
-        <AddItemForm onAddItemCallback={onAddItemCallback} />
-      </div>
-      <ul>
-        {props.tasks.map((task) => (
-          <Task
-            key={task.id}
-            id={task.id}
-            title={task.title}
-            isDone={task.isDone}
-            changeTaskStatusCallback={changeTaskStatusCallBack}
-            removeTaskCallback={removeTaskCallback}
-            changeTaskTitleCallback={changeTaskTitleCallback}
+    <Grid item xs={12} md={6} lg={4}>
+      <Box sx={{ height: '100%' }}>
+        <Paper
+          elevation={3}
+          sx={{
+            p: '20px',
+            height: '100%',
+            boxSizing: 'border-box',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          <div>
+            <Header
+              headerText={props.headerText}
+              removeTodoListCallback={removeTodoListCallback}
+              changeTodoListTitleCallback={changeTodoListTitleCallback}
+            />
+            <AddItemForm onAddItemCallback={onAddItemCallback} />
+            <List>
+              {props.tasks.map((task, i) => (
+                <Task
+                  key={task.id}
+                  id={task.id}
+                  title={task.title}
+                  isDone={task.isDone}
+                  changeTaskStatusCallback={changeTaskStatusCallBack}
+                  removeTaskCallback={removeTaskCallback}
+                  changeTaskTitleCallback={changeTaskTitleCallback}
+                  isLast={i === props.tasks.length - 1}
+                />
+              ))}
+            </List>
+          </div>
+          <ButtonsPanel
+            filterValue={props.filterValue}
+            onClickFilterButtonCallback={onClickFilterButtonCallback}
           />
-        ))}
-      </ul>
-      <ButtonsPanel
-        filterValue={props.filterValue}
-        onClickFilterButtonCallback={onClickFilterButtonCallback}
-      />
-    </div>
+        </Paper>
+      </Box>
+    </Grid>
   );
 };

@@ -1,9 +1,10 @@
+import { TextField } from '@mui/material';
 import React, {
   ChangeEvent,
   DetailedHTMLProps,
   KeyboardEvent,
   useState,
-} from "react";
+} from 'react';
 
 type DefaultSpanPropsType = DetailedHTMLProps<
   React.HTMLAttributes<HTMLSpanElement>,
@@ -50,7 +51,7 @@ export const EditableItem = ({
   };
 
   const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-    e.key === "Enter" && editItem();
+    e.key === 'Enter' && editItem();
   };
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -58,12 +59,15 @@ export const EditableItem = ({
   };
 
   return isEditActive ? (
-    <input
+    <TextField
       value={newItemTitle}
       autoFocus={true}
       onBlur={onBlurHandler}
       onKeyPress={onKeyPressHandler}
       onChange={onChangeHandler}
+      size="small"
+      variant="standard"
+      fullWidth
     />
   ) : (
     <span {...props} onDoubleClick={onDoubleClickHandler}>
