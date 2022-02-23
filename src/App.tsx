@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { v1 } from 'uuid';
-import { TodoList } from './TodoList';
-import { AddItemForm } from './AddItemForm';
+import React, { useState } from "react";
+import { v1 } from "uuid";
+import { TodoList } from "./TodoList";
+import { AddItemForm } from "./AddItemForm";
 import {
   AppBar,
   Button,
@@ -11,18 +11,10 @@ import {
   IconButton,
   Toolbar,
   Typography,
-} from '@mui/material';
-import { DarkMode, LightMode, Menu } from '@mui/icons-material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Box } from '@mui/system';
-
-export type FilterValueType = 'all' | 'active' | 'completed';
-
-type TodoListType = {
-  id: string;
-  title: string;
-  filterValue: FilterValueType;
-};
+} from "@mui/material";
+import { DarkMode, LightMode, Menu } from "@mui/icons-material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Box } from "@mui/system";
 
 export type TaskType = {
   id: string;
@@ -67,20 +59,20 @@ function App() {
   const todoListId2 = v1();
 
   const [todoLists, setTodoLists] = useState<TodoListType[]>([
-    { id: todoListId1, title: 'What to learn', filterValue: 'all' },
-    { id: todoListId2, title: 'What to buy', filterValue: 'all' },
+    { id: todoListId1, title: "What to learn", filterValue: "all" },
+    { id: todoListId2, title: "What to buy", filterValue: "all" },
   ]);
   const [tasks, setTasks] = useState<TasksType>({
     [todoListId1]: [
-      { id: v1(), title: 'HTML&CSS', isDone: true },
-      { id: v1(), title: 'JS', isDone: true },
-      { id: v1(), title: 'React', isDone: false },
-      { id: v1(), title: 'Redux', isDone: false },
+      { id: v1(), title: "HTML&CSS", isDone: true },
+      { id: v1(), title: "JS", isDone: true },
+      { id: v1(), title: "React", isDone: false },
+      { id: v1(), title: "Redux", isDone: false },
     ],
     [todoListId2]: [
-      { id: v1(), title: 'Bread', isDone: true },
-      { id: v1(), title: 'Laptop', isDone: false },
-      { id: v1(), title: 'Elephant', isDone: false },
+      { id: v1(), title: "Bread", isDone: true },
+      { id: v1(), title: "Laptop", isDone: false },
+      { id: v1(), title: "Elephant", isDone: false },
     ],
   });
   const [isDarkTheme, setIsDarkTheme] = useState(false);
@@ -91,14 +83,12 @@ function App() {
       [todoListId]: tasks[todoListId].filter((t) => t.id !== taskId),
     });
   };
-
   const addTask: AddTaskType = (todoListId, title) => {
     setTasks({
       ...tasks,
       [todoListId]: [{ id: v1(), title, isDone: false }, ...tasks[todoListId]],
     });
   };
-
   const changeTaskStatus: ChangeTaskStatusType = (todoListId, id, isDone) => {
     setTasks({
       ...tasks,
@@ -107,7 +97,6 @@ function App() {
       ),
     });
   };
-
   const changeTaskTitle: ChangeTaskTitleType = (todoListId, id, title) => {
     setTasks({
       ...tasks,
@@ -116,7 +105,30 @@ function App() {
       ),
     });
   };
+  const getFilteredTasks = (todoList: TodoListType) => {
+    if (todoList.filterValue === "active") {
+      return tasks[todoList.id].filter((t) => !t.isDone);
+    }
 
+    if (todoList.filterValue === "completed") {
+      return tasks[todoList.id].filter((t) => t.isDone);
+    }
+
+    return tasks[todoList.id];
+  };
+
+  const removeTodoList: RemoveTodoListType = (id) => {
+    console.log("removeTodoList");
+
+    setTodoLists(todoLists.filter((tl) => tl.id !== id));
+  };
+  const addTodoList = (title: string) => {
+    const id = v1();
+
+    setTodoLists([{ id, title, filterValue: "all" }, ...todoLists]);
+
+    setTasks({ ...tasks, [id]: [] });
+  };
   const changeFilterValue: ChangeFilterValueType = (
     todoListId,
     filterValue
@@ -127,37 +139,10 @@ function App() {
       )
     );
   };
-
   const changeTodoListTitle: ChangeTodoListTitleType = (todoListId, title) => {
     setTodoLists(
       todoLists.map((tl) => (tl.id === todoListId ? { ...tl, title } : tl))
     );
-  };
-
-  const getFilteredTasks = (todoList: TodoListType) => {
-    if (todoList.filterValue === 'active') {
-      return tasks[todoList.id].filter((t) => !t.isDone);
-    }
-
-    if (todoList.filterValue === 'completed') {
-      return tasks[todoList.id].filter((t) => t.isDone);
-    }
-
-    return tasks[todoList.id];
-  };
-
-  const removeTodoList: RemoveTodoListType = (id) => {
-    console.log('removeTodoList');
-
-    setTodoLists(todoLists.filter((tl) => tl.id !== id));
-  };
-
-  const addTodoList = (title: string) => {
-    const id = v1();
-
-    setTodoLists([{ id, title, filterValue: 'all' }, ...todoLists]);
-
-    setTasks({ ...tasks, [id]: [] });
   };
 
   const todoListsComponents = todoLists.map((tl) => (
@@ -181,7 +166,7 @@ function App() {
 
   const darkTheme = createTheme({
     palette: {
-      mode: 'dark',
+      mode: "dark",
     },
   });
 
@@ -190,7 +175,7 @@ function App() {
       <CssBaseline />
       <AppBar position="static">
         <Toolbar>
-          <Box sx={{ flexGrow: 1, justifyContent: 'left' }}>
+          <Box sx={{ flexBasis: "100%", justifyContent: "left" }}>
             <IconButton
               size="large"
               edge="start"
@@ -203,25 +188,25 @@ function App() {
           <Typography
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1, textAlign: 'center' }}
+            sx={{ flexBasis: "100%", textAlign: "center" }}
           >
             TodoList app
           </Typography>
-          <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
+          <Box sx={{ flexBasis: "100%", textAlign: "right" }}>
             <IconButton onClick={() => setIsDarkTheme(!isDarkTheme)}>
               {isDarkTheme ? (
                 <LightMode />
               ) : (
-                <DarkMode sx={{ color: '#ffffff' }} />
+                <DarkMode sx={{ color: "#ffffff" }} />
               )}
             </IconButton>
             <Button color="inherit">Login</Button>
           </Box>
         </Toolbar>
       </AppBar>
-      <Container sx={{ mt: '40px', mb: '40px' }}>
+      <Container sx={{ mt: "40px", mb: "40px" }}>
         <AddItemForm onAddItemCallback={addTodoList} />
-        <Grid container spacing="40px" sx={{ mt: '0px' }}>
+        <Grid container spacing="40px" sx={{ mt: "0px" }}>
           {todoListsComponents}
         </Grid>
       </Container>
