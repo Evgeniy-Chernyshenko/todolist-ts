@@ -1,7 +1,7 @@
-// import React, { useState } from "react";
-// import { v1 } from "uuid";
-// import { TodoList } from "./TodoList";
-// import { AddItemForm } from "./AddItemForm";
+// import React, { useState, useReducer } from 'react';
+// import { v1 } from 'uuid';
+// import { TodoList } from './TodoList';
+// import { AddItemForm } from './AddItemForm';
 // import {
 //   AppBar,
 //   Button,
@@ -11,20 +11,21 @@
 //   IconButton,
 //   Toolbar,
 //   Typography,
-// } from "@mui/material";
-// import { DarkMode, LightMode, Menu } from "@mui/icons-material";
-// import { createTheme, ThemeProvider } from "@mui/material/styles";
-// import { Box } from "@mui/system";
+// } from '@mui/material';
+// import { DarkMode, LightMode, Menu } from '@mui/icons-material';
+// import { createTheme, ThemeProvider } from '@mui/material/styles';
+// import { Box } from '@mui/system';
+// import {
+//   FilterValueType,
+//   todoListsAC,
+//   todoListsReducer,
+//   TodoListType,
+// } from './store/todolists-reducer';
+// import { tasksAC, tasksReducer } from './store/tasks-reducer';
 
-// export type TaskType = {
-//   id: string;
-//   title: string;
-//   isDone: boolean;
-// };
+// export type RemoveTaskType = (todoListId: string, taskId: string) => void;
 
-// type TasksType = {
-//   [todoListId: string]: TaskType[];
-// };
+// export type AddTaskType = (todoListId: string, title: string) => void;
 
 // export type ChangeTaskStatusType = (
 //   todoListId: string,
@@ -38,11 +39,7 @@
 //   title: string
 // ) => void;
 
-// export type RemoveTaskType = (todoListId: string, taskId: string) => void;
-
 // export type RemoveTodoListType = (id: string) => void;
-
-// export type AddTaskType = (todoListId: string, title: string) => void;
 
 // export type ChangeFilterValueType = (
 //   todoListId: string,
@@ -54,63 +51,47 @@
 //   title: string
 // ) => void;
 
-// function App() {
+// function AppWithUseReducer() {
 //   const todoListId1 = v1();
 //   const todoListId2 = v1();
 
-//   const [todoLists, setTodoLists] = useState<TodoListType[]>([
-//     { id: todoListId1, title: "What to learn", filterValue: "all" },
-//     { id: todoListId2, title: "What to buy", filterValue: "all" },
+//   const [todoLists, dispatchToTodoLists] = useReducer(todoListsReducer, [
+//     { id: todoListId1, title: 'What to learn', filterValue: 'all' },
+//     { id: todoListId2, title: 'What to buy', filterValue: 'all' },
 //   ]);
-//   const [tasks, setTasks] = useState<TasksType>({
+//   const [tasks, dispatchToTasks] = useReducer(tasksReducer, {
 //     [todoListId1]: [
-//       { id: v1(), title: "HTML&CSS", isDone: true },
-//       { id: v1(), title: "JS", isDone: true },
-//       { id: v1(), title: "React", isDone: false },
-//       { id: v1(), title: "Redux", isDone: false },
+//       { id: v1(), title: 'HTML&CSS', isDone: true },
+//       { id: v1(), title: 'JS', isDone: true },
+//       { id: v1(), title: 'React', isDone: false },
+//       { id: v1(), title: 'Redux', isDone: false },
 //     ],
 //     [todoListId2]: [
-//       { id: v1(), title: "Bread", isDone: true },
-//       { id: v1(), title: "Laptop", isDone: false },
-//       { id: v1(), title: "Elephant", isDone: false },
+//       { id: v1(), title: 'Bread', isDone: true },
+//       { id: v1(), title: 'Laptop', isDone: false },
+//       { id: v1(), title: 'Elephant', isDone: false },
 //     ],
 //   });
 //   const [isDarkTheme, setIsDarkTheme] = useState(false);
 
 //   const removeTask: RemoveTaskType = (todoListId, taskId) => {
-//     setTasks({
-//       ...tasks,
-//       [todoListId]: tasks[todoListId].filter((t) => t.id !== taskId),
-//     });
+//     dispatchToTasks(tasksAC.removeTask(todoListId, taskId));
 //   };
 //   const addTask: AddTaskType = (todoListId, title) => {
-//     setTasks({
-//       ...tasks,
-//       [todoListId]: [{ id: v1(), title, isDone: false }, ...tasks[todoListId]],
-//     });
+//     dispatchToTasks(tasksAC.addTask(todoListId, title));
 //   };
 //   const changeTaskStatus: ChangeTaskStatusType = (todoListId, id, isDone) => {
-//     setTasks({
-//       ...tasks,
-//       [todoListId]: tasks[todoListId].map((t) =>
-//         t.id === id ? { ...t, isDone } : t
-//       ),
-//     });
+//     dispatchToTasks(tasksAC.changeTaskStatus(todoListId, id, isDone));
 //   };
 //   const changeTaskTitle: ChangeTaskTitleType = (todoListId, id, title) => {
-//     setTasks({
-//       ...tasks,
-//       [todoListId]: tasks[todoListId].map((t) =>
-//         t.id === id ? { ...t, title } : t
-//       ),
-//     });
+//     dispatchToTasks(tasksAC.changeTaskTitle(todoListId, id, title));
 //   };
 //   const getFilteredTasks = (todoList: TodoListType) => {
-//     if (todoList.filterValue === "active") {
+//     if (todoList.filterValue === 'active') {
 //       return tasks[todoList.id].filter((t) => !t.isDone);
 //     }
 
-//     if (todoList.filterValue === "completed") {
+//     if (todoList.filterValue === 'completed') {
 //       return tasks[todoList.id].filter((t) => t.isDone);
 //     }
 
@@ -118,31 +99,27 @@
 //   };
 
 //   const removeTodoList: RemoveTodoListType = (id) => {
-//     console.log("removeTodoList");
+//     const action = todoListsAC.removeTodoList(id);
 
-//     setTodoLists(todoLists.filter((tl) => tl.id !== id));
+//     dispatchToTodoLists(action);
+//     dispatchToTasks(action);
 //   };
 //   const addTodoList = (title: string) => {
-//     const id = v1();
+//     const action = todoListsAC.addTodoList(title);
 
-//     setTodoLists([{ id, title, filterValue: "all" }, ...todoLists]);
-
-//     setTasks({ ...tasks, [id]: [] });
+//     dispatchToTodoLists(action);
+//     dispatchToTasks(action);
 //   };
 //   const changeFilterValue: ChangeFilterValueType = (
 //     todoListId,
 //     filterValue
 //   ) => {
-//     setTodoLists(
-//       todoLists.map((tl) =>
-//         tl.id === todoListId ? { ...tl, filterValue } : tl
-//       )
+//     dispatchToTodoLists(
+//       todoListsAC.changeTodoListFilterValue(todoListId, filterValue)
 //     );
 //   };
 //   const changeTodoListTitle: ChangeTodoListTitleType = (todoListId, title) => {
-//     setTodoLists(
-//       todoLists.map((tl) => (tl.id === todoListId ? { ...tl, title } : tl))
-//     );
+//     dispatchToTodoLists(todoListsAC.changeTodoListTitle(todoListId, title));
 //   };
 
 //   const todoListsComponents = todoLists.map((tl) => (
@@ -166,7 +143,7 @@
 
 //   const darkTheme = createTheme({
 //     palette: {
-//       mode: "dark",
+//       mode: 'dark',
 //     },
 //   });
 
@@ -175,7 +152,7 @@
 //       <CssBaseline />
 //       <AppBar position="static">
 //         <Toolbar>
-//           <Box sx={{ flexBasis: "100%", justifyContent: "left" }}>
+//           <Box sx={{ flexBasis: '100%', justifyContent: 'left' }}>
 //             <IconButton
 //               size="large"
 //               edge="start"
@@ -188,25 +165,25 @@
 //           <Typography
 //             variant="h6"
 //             component="div"
-//             sx={{ flexBasis: "100%", textAlign: "center" }}
+//             sx={{ flexBasis: '100%', textAlign: 'center' }}
 //           >
 //             TodoList app
 //           </Typography>
-//           <Box sx={{ flexBasis: "100%", textAlign: "right" }}>
+//           <Box sx={{ flexBasis: '100%', textAlign: 'right' }}>
 //             <IconButton onClick={() => setIsDarkTheme(!isDarkTheme)}>
 //               {isDarkTheme ? (
 //                 <LightMode />
 //               ) : (
-//                 <DarkMode sx={{ color: "#ffffff" }} />
+//                 <DarkMode sx={{ color: '#ffffff' }} />
 //               )}
 //             </IconButton>
 //             <Button color="inherit">Login</Button>
 //           </Box>
 //         </Toolbar>
 //       </AppBar>
-//       <Container sx={{ mt: "40px", mb: "40px" }}>
+//       <Container sx={{ mt: '40px', mb: '40px' }}>
 //         <AddItemForm onAddItemCallback={addTodoList} />
-//         <Grid container spacing="40px" sx={{ mt: "0px" }}>
+//         <Grid container spacing="40px" sx={{ mt: '0px' }}>
 //           {todoListsComponents}
 //         </Grid>
 //       </Container>
@@ -214,6 +191,6 @@
 //   );
 // }
 
-// export default App;
+// export default AppWithUseReducer;
 
 export default {};

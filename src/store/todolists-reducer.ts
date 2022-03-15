@@ -1,38 +1,38 @@
 import { v1 } from 'uuid';
 
-type FilterValueType = 'all' | 'active' | 'completed';
+export type FilterValueType = 'all' | 'active' | 'completed';
 
-type TodolistType = {
+export type TodoListType = {
   id: string;
   title: string;
   filterValue: FilterValueType;
 };
 
-export type TodolistsType = TodolistType[];
+export type TodoListsType = TodoListType[];
 
-type ActionCreatorsType = typeof todolistsAC;
+type ActionCreatorsType = typeof todoListsAC;
 type ActionCreatorsTypeKeys = keyof ActionCreatorsType;
 type ActionType = ReturnType<ActionCreatorsType[ActionCreatorsTypeKeys]>;
 
-export const todolistsAC = {
-  removeTodolist: (id: string) =>
+export const todoListsAC = {
+  removeTodoList: (id: string) =>
     ({
       type: 'REMOVE_TODOLIST',
       id,
     } as const),
-  addTodolist: (title: string) =>
+  addTodoList: (title: string) =>
     ({
       type: 'ADD_TODOLIST',
       id: v1(),
       title,
     } as const),
-  changeTodolistFilterValue: (id: string, value: FilterValueType) =>
+  changeTodoListFilterValue: (id: string, value: FilterValueType) =>
     ({
       type: 'CHANGE_TODOLIST_FILTER_VALUE',
       id,
       value,
     } as const),
-  changeTodolistTitle: (id: string, title: string) =>
+  changeTodoListTitle: (id: string, title: string) =>
     ({
       type: 'CHANGE_TODOLIST_TITLE',
       id,
@@ -40,10 +40,18 @@ export const todolistsAC = {
     } as const),
 };
 
-export const todolistsReducer = (
-  state: TodolistsType,
+// export const todoListId1 = v1();
+// export const todoListId2 = v1();
+
+const initialState: TodoListsType = [
+  // { id: todoListId1, title: 'What to learn', filterValue: 'all' },
+  // { id: todoListId2, title: 'What to buy', filterValue: 'all' },
+];
+
+export const todoListsReducer = (
+  state = initialState,
   action: ActionType
-): TodolistsType => {
+): TodoListsType => {
   switch (action.type) {
     case 'REMOVE_TODOLIST':
       return state.filter((tl) => tl.id !== action.id);

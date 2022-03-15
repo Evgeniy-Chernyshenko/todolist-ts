@@ -1,18 +1,21 @@
-import { todolistsReducer } from './todolists-reducer';
-import { todolistsAC, TodolistsType } from './todolists-reducer';
+import { todoListsReducer } from './todolists-reducer';
+import { todoListsAC, TodoListsType } from './todolists-reducer';
 import { TasksType, tasksReducer, tasksAC } from './tasks-reducer';
 
-const startState: TasksType = {
-  todolistId1: [
-    { id: 'taskId1', title: 'Bread', isDone: false },
-    { id: 'taskId2', title: 'Butter', isDone: true },
-    { id: 'taskId3', title: 'Juice', isDone: false },
-  ],
-  todolistId2: [
-    { id: 'taskId4', title: 'Elephant', isDone: false },
-    { id: 'taskId5', title: 'Laptop', isDone: true },
-  ],
-};
+let startState: TasksType;
+beforeEach(() => {
+  startState = {
+    todolistId1: [
+      { id: 'taskId1', title: 'Bread', isDone: false },
+      { id: 'taskId2', title: 'Butter', isDone: true },
+      { id: 'taskId3', title: 'Juice', isDone: false },
+    ],
+    todolistId2: [
+      { id: 'taskId4', title: 'Elephant', isDone: false },
+      { id: 'taskId5', title: 'Laptop', isDone: true },
+    ],
+  };
+});
 
 test('task should be removed', () => {
   const endState = tasksReducer(
@@ -64,12 +67,12 @@ test('task should be change title', () => {
 });
 
 test('new property with todolistId and empty array as value should be added when new todolist is added', () => {
-  const action = todolistsAC.addTodolist('New todolist');
+  const action = todoListsAC.addTodoList('New todolist');
 
-  const todolistsStartState: TodolistsType = [];
+  const todolistsStartState: TodoListsType = [];
   const tasksStartState: TasksType = {};
 
-  const todolistsEndState = todolistsReducer(todolistsStartState, action);
+  const todolistsEndState = todoListsReducer(todolistsStartState, action);
   const tasksEndState = tasksReducer(tasksStartState, action);
 
   expect(todolistsEndState[0].id).toBe(Object.keys(tasksEndState)[0]);
@@ -78,7 +81,7 @@ test('new property with todolistId and empty array as value should be added when
 test('property with todolistId should be deleted when todolist is deleted', () => {
   const endState = tasksReducer(
     startState,
-    todolistsAC.removeTodolist('todolistId1')
+    todoListsAC.removeTodoList('todolistId1')
   );
 
   expect(Object.keys(endState).length).toBe(1);

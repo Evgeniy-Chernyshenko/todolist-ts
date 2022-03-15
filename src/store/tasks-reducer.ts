@@ -1,7 +1,7 @@
-import { todolistsAC } from './todolists-reducer';
+import { todoListsAC } from './todolists-reducer';
 import { v1 } from 'uuid';
 
-type TaskType = {
+export type TaskType = {
   id: string;
   title: string;
   isDone: boolean;
@@ -11,12 +11,11 @@ export type TasksType = {
   [todolistId: string]: TaskType[];
 };
 
-type ActionCreatorType = typeof tasksAC;
-type ActionCreatorTypeKeys = keyof ActionCreatorType;
+type ActionCreatorsType<T> = T extends { [key: string]: infer V } ? V : never;
 type ActionType = ReturnType<
-  | ActionCreatorType[ActionCreatorTypeKeys]
-  | typeof todolistsAC.addTodolist
-  | typeof todolistsAC.removeTodolist
+  | ActionCreatorsType<typeof tasksAC>
+  | typeof todoListsAC.addTodoList
+  | typeof todoListsAC.removeTodoList
 >;
 
 export const tasksAC = {
@@ -48,8 +47,22 @@ export const tasksAC = {
     } as const),
 };
 
+const initialState: TasksType = {
+  // [todoListId1]: [
+  //   { id: v1(), title: 'HTML&CSS', isDone: true },
+  //   { id: v1(), title: 'JS', isDone: true },
+  //   { id: v1(), title: 'React', isDone: false },
+  //   { id: v1(), title: 'Redux', isDone: false },
+  // ],
+  // [todoListId2]: [
+  //   { id: v1(), title: 'Bread', isDone: true },
+  //   { id: v1(), title: 'Laptop', isDone: false },
+  //   { id: v1(), title: 'Elephant', isDone: false },
+  // ],
+};
+
 export const tasksReducer = (
-  state: TasksType,
+  state = initialState,
   action: ActionType
 ): TasksType => {
   switch (action.type) {
@@ -90,10 +103,7 @@ export const tasksReducer = (
       return { ...state, [action.id]: [] };
 
     case 'REMOVE_TODOLIST':
-      const {
-        [action.id]: [],
-        ...rest
-      } = state;
+      const { [action.id]: toDelete, ...rest } = state;
       return rest;
 
     default:

@@ -1,8 +1,8 @@
 import React from 'react';
 // import { Button } from "./Button";
 import { OnClickFilterButtonCallbackType } from './TodoList';
-import { FilterValueType } from './App';
 import { ButtonGroup, Button } from '@mui/material';
+import { FilterValueType } from './store/todolists-reducer';
 
 type ButtonsPanelPropsType = {
   filterValue: FilterValueType;

@@ -1,8 +1,8 @@
 import { DeleteOutline } from '@mui/icons-material';
 import { Checkbox, IconButton, ListItem, Typography } from '@mui/material';
 import React, { ChangeEvent } from 'react';
-import { TaskType } from './App';
 import { EditableItem, OnChangeItemTitleCallback } from './EditableItem';
+import { TaskType } from './store/tasks-reducer';
 import {
   ChangeTaskStatusCallBackType,
   ChangeTaskTitleCallbackType,

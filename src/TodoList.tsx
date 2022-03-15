@@ -1,33 +1,21 @@
 import React from 'react';
-import {
-  TaskType,
-  FilterValueType,
-  ChangeTaskStatusType,
-  RemoveTaskType,
-  RemoveTodoListType,
-  ChangeTaskTitleType,
-  AddTaskType,
-  ChangeFilterValueType,
-  ChangeTodoListTitleType,
-} from './App';
 import { Header } from './Header';
 import { Task } from './Task';
 import { AddItemForm } from './AddItemForm';
 import { ButtonsPanel } from './ButtonsPanel';
 import { Box, Grid, List, Paper } from '@mui/material';
+import {
+  FilterValueType,
+  todoListsAC,
+  TodoListType,
+} from './store/todolists-reducer';
+import { tasksAC, TaskType } from './store/tasks-reducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootStateType } from './store/state';
 
 type TodoListPropsType = {
   id: string;
-  headerText: string;
-  tasks: TaskType[];
-  removeTask: RemoveTaskType;
-  addTask: AddTaskType;
-  changeFilterValue: ChangeFilterValueType;
-  changeTaskStatus: ChangeTaskStatusType;
   filterValue: FilterValueType;
-  removeTodoList: RemoveTodoListType;
-  changeTaskTitle: ChangeTaskTitleType;
-  changeTodoListTitle: ChangeTodoListTitleType;
 };
 
 export type ChangeTaskStatusCallBackType = (
@@ -51,40 +39,59 @@ export type ChangeTodoListTitleCallbackType = (title: string) => void;
 export type OnAddItemCallbackType = (title: string) => void;
 
 export const TodoList = (props: TodoListPropsType) => {
+  console.log('TodoList');
+
+  const todoList = useSelector<RootStateType, TodoListType>(
+    (state) => state.todoLists.find((t) => t.id === props.id)!
+  );
+  const tasks = useSelector<RootStateType, TaskType[]>((state) => {
+    if (props.filterValue === 'active') {
+      return state.tasks[props.id].filter((t) => !t.isDone);
+    }
+
+    if (props.filterValue === 'completed') {
+      return state.tasks[props.id].filter((t) => t.isDone);
+    }
+
+    return state.tasks[props.id];
+  });
+  const dispatch = useDispatch();
+
   const onClickFilterButtonCallback: OnClickFilterButtonCallbackType =
-    (filterValue) => () =>
-      props.changeFilterValue(props.id, filterValue);
+    (filterValue) => () => {
+      dispatch(todoListsAC.changeTodoListFilterValue(props.id, filterValue));
+    };
 
   const removeTodoListCallback = () => {
-    props.removeTodoList(props.id);
+    dispatch(todoListsAC.removeTodoList(props.id));
   };
 
   const onAddItemCallback: OnAddItemCallbackType = (title) => {
-    props.addTask(props.id, title);
+    dispatch(tasksAC.addTask(props.id, title));
   };
 
   const changeTaskStatusCallBack: ChangeTaskStatusCallBackType = (
     taskId,
     isDone
   ) => {
-    props.changeTaskStatus(props.id, taskId, isDone);
+    dispatch(tasksAC.changeTaskStatus(props.id, taskId, isDone));
   };
 
   const removeTaskCallback: RemoveTaskCallbackType = (taskId) => {
-    props.removeTask(props.id, taskId);
+    dispatch(tasksAC.removeTask(props.id, taskId));
   };
 
   const changeTaskTitleCallback: ChangeTaskTitleCallbackType = (
     taskId,
     title
   ) => {
-    props.changeTaskTitle(props.id, taskId, title);
+    dispatch(tasksAC.changeTaskTitle(props.id, taskId, title));
   };
 
   const changeTodoListTitleCallback: ChangeTodoListTitleCallbackType = (
     title
   ) => {
-    props.changeTodoListTitle(props.id, title);
+    dispatch(todoListsAC.changeTodoListTitle(props.id, title));
   };
 
   return (
@@ -103,13 +110,13 @@ export const TodoList = (props: TodoListPropsType) => {
         >
           <div>
             <Header
-              headerText={props.headerText}
+              headerText={todoList.title}
               removeTodoListCallback={removeTodoListCallback}
               changeTodoListTitleCallback={changeTodoListTitleCallback}
             />
             <AddItemForm onAddItemCallback={onAddItemCallback} />
             <List>
-              {props.tasks.map((task, i) => (
+              {tasks.map((task, i) => (
                 <Task
                   key={task.id}
                   id={task.id}
@@ -118,7 +125,7 @@ export const TodoList = (props: TodoListPropsType) => {
                   changeTaskStatusCallback={changeTaskStatusCallBack}
                   removeTaskCallback={removeTaskCallback}
                   changeTaskTitleCallback={changeTaskTitleCallback}
-                  isLast={i === props.tasks.length - 1}
+                  isLast={i === tasks.length - 1}
                 />
               ))}
             </List>
