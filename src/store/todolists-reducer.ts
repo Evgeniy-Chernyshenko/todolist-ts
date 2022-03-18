@@ -14,32 +14,6 @@ type ActionCreatorsType = typeof todoListsAC;
 type ActionCreatorsTypeKeys = keyof ActionCreatorsType;
 type ActionType = ReturnType<ActionCreatorsType[ActionCreatorsTypeKeys]>;
 
-export const todoListsAC = {
-  removeTodoList: (id: string) =>
-    ({
-      type: 'REMOVE_TODOLIST',
-      id,
-    } as const),
-  addTodoList: (title: string) =>
-    ({
-      type: 'ADD_TODOLIST',
-      id: v1(),
-      title,
-    } as const),
-  changeTodoListFilterValue: (id: string, value: FilterValueType) =>
-    ({
-      type: 'CHANGE_TODOLIST_FILTER_VALUE',
-      id,
-      value,
-    } as const),
-  changeTodoListTitle: (id: string, title: string) =>
-    ({
-      type: 'CHANGE_TODOLIST_TITLE',
-      id,
-      title,
-    } as const),
-};
-
 // export const todoListId1 = v1();
 // export const todoListId2 = v1();
 
@@ -75,4 +49,30 @@ export const todoListsReducer = (
     default:
       return state;
   }
+};
+
+export const todoListsAC = {
+  removeTodoList: (id: string) =>
+    ({
+      type: 'REMOVE_TODOLIST',
+      id,
+    } as const),
+  addTodoList: (title: string) =>
+    ({
+      type: 'ADD_TODOLIST',
+      id: v1(),
+      title,
+    } as const),
+  changeTodoListFilterValue: (id: string, value: FilterValueType) =>
+    ({
+      type: 'CHANGE_TODOLIST_FILTER_VALUE',
+      id,
+      value,
+    } as const),
+  changeTodoListTitle: (id: string, title: string) =>
+    ({
+      type: 'CHANGE_TODOLIST_TITLE',
+      id,
+      title,
+    } as const),
 };

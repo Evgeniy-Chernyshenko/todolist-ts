@@ -18,35 +18,6 @@ type ActionType = ReturnType<
   | typeof todoListsAC.removeTodoList
 >;
 
-export const tasksAC = {
-  removeTask: (todolistId: string, taskId: string) =>
-    ({
-      type: 'REMOVE_TASK',
-      todolistId,
-      taskId,
-    } as const),
-  addTask: (todoListId: string, title: string) =>
-    ({
-      type: 'ADD_TASK',
-      todoListId,
-      title,
-    } as const),
-  changeTaskStatus: (todoListId: string, taskId: string, isDone: boolean) =>
-    ({
-      type: 'CHANGE_TASK_STATUS',
-      todoListId,
-      taskId,
-      isDone,
-    } as const),
-  changeTaskTitle: (todoListId: string, taskId: string, title: string) =>
-    ({
-      type: 'CHANGE_TASK_TITLE',
-      todoListId,
-      taskId,
-      title,
-    } as const),
-};
-
 const initialState: TasksType = {
   // [todoListId1]: [
   //   { id: v1(), title: 'HTML&CSS', isDone: true },
@@ -109,4 +80,33 @@ export const tasksReducer = (
     default:
       return state;
   }
+};
+
+export const tasksAC = {
+  removeTask: (todolistId: string, taskId: string) =>
+    ({
+      type: 'REMOVE_TASK',
+      todolistId,
+      taskId,
+    } as const),
+  addTask: (todoListId: string, title: string) =>
+    ({
+      type: 'ADD_TASK',
+      todoListId,
+      title,
+    } as const),
+  changeTaskStatus: (todoListId: string, taskId: string, isDone: boolean) =>
+    ({
+      type: 'CHANGE_TASK_STATUS',
+      todoListId,
+      taskId,
+      isDone,
+    } as const),
+  changeTaskTitle: (todoListId: string, taskId: string, title: string) =>
+    ({
+      type: 'CHANGE_TASK_TITLE',
+      todoListId,
+      taskId,
+      title,
+    } as const),
 };

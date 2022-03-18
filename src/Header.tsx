@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { ChangeTodoListTitleCallbackType } from './TodoList';
 import { EditableItem } from './EditableItem';
 import { Grid, IconButton, Typography } from '@mui/material';
@@ -10,7 +10,9 @@ type TodoListHeaderPropsType = {
   changeTodoListTitleCallback: ChangeTodoListTitleCallbackType;
 };
 
-export const Header = (props: TodoListHeaderPropsType) => {
+export const Header = memo((props: TodoListHeaderPropsType) => {
+  console.log('render Header');
+
   return (
     <Grid
       container
@@ -36,4 +38,4 @@ export const Header = (props: TodoListHeaderPropsType) => {
       </IconButton>
     </Grid>
   );
-};
+});

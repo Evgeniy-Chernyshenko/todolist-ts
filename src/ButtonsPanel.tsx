@@ -1,5 +1,4 @@
-import React from 'react';
-// import { Button } from "./Button";
+import React, { memo } from 'react';
 import { OnClickFilterButtonCallbackType } from './TodoList';
 import { ButtonGroup, Button } from '@mui/material';
 import { FilterValueType } from './store/todolists-reducer';
@@ -14,7 +13,9 @@ const activeButtonParams = {
   color: 'error',
 } as const;
 
-export const ButtonsPanel = (props: ButtonsPanelPropsType) => {
+export const ButtonsPanel = memo((props: ButtonsPanelPropsType) => {
+  console.log('render ButtonsPanel');
+
   return (
     <ButtonGroup fullWidth>
       <Button
@@ -37,4 +38,4 @@ export const ButtonsPanel = (props: ButtonsPanelPropsType) => {
       </Button>
     </ButtonGroup>
   );
-};
+});

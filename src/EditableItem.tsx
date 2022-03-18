@@ -3,6 +3,7 @@ import React, {
   ChangeEvent,
   DetailedHTMLProps,
   KeyboardEvent,
+  memo,
   useState,
 } from 'react';
 
@@ -18,60 +19,64 @@ type EditableItemPropsType = DefaultSpanPropsType & {
   onChangeItemTitleCallback: OnChangeItemTitleCallback;
 };
 
-export const EditableItem = ({
-  onDoubleClick,
-  title,
-  onChangeItemTitleCallback,
-  ...props
-}: EditableItemPropsType) => {
-  const [isEditActive, setIsEditActive] = useState(false);
-  const [newItemTitle, setNewItemTitle] = useState(title);
+export const EditableItem = memo(
+  ({
+    onDoubleClick,
+    title,
+    onChangeItemTitleCallback,
+    ...props
+  }: EditableItemPropsType) => {
+    console.log('render EditableItem');
 
-  const editItem = () => {
-    const clearNewItemTitle = newItemTitle.trim();
+    const [isEditActive, setIsEditActive] = useState(false);
+    const [newItemTitle, setNewItemTitle] = useState(title);
 
-    setIsEditActive(false);
+    const editItem = () => {
+      const clearNewItemTitle = newItemTitle.trim();
 
-    if (!clearNewItemTitle || clearNewItemTitle === title) {
-      setNewItemTitle(title);
+      setIsEditActive(false);
 
-      return;
-    }
+      if (!clearNewItemTitle || clearNewItemTitle === title) {
+        setNewItemTitle(title);
 
-    setNewItemTitle(clearNewItemTitle);
-    onChangeItemTitleCallback(clearNewItemTitle);
-  };
+        return;
+      }
 
-  const onDoubleClickHandler = () => {
-    setIsEditActive(true);
-  };
+      setNewItemTitle(clearNewItemTitle);
+      onChangeItemTitleCallback(clearNewItemTitle);
+    };
 
-  const onBlurHandler = () => {
-    editItem();
-  };
+    const onDoubleClickHandler = () => {
+      setIsEditActive(true);
+    };
 
-  const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-    e.key === 'Enter' && editItem();
-  };
+    const onBlurHandler = () => {
+      editItem();
+    };
 
-  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setNewItemTitle(e.currentTarget.value);
-  };
+    const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+      e.key === 'Enter' && editItem();
+    };
 
-  return isEditActive ? (
-    <TextField
-      value={newItemTitle}
-      autoFocus={true}
-      onBlur={onBlurHandler}
-      onKeyPress={onKeyPressHandler}
-      onChange={onChangeHandler}
-      size="small"
-      variant="standard"
-      fullWidth
-    />
-  ) : (
-    <span {...props} onDoubleClick={onDoubleClickHandler}>
-      {title}
-    </span>
-  );
-};
+    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+      setNewItemTitle(e.currentTarget.value);
+    };
+
+    return isEditActive ? (
+      <TextField
+        value={newItemTitle}
+        autoFocus={true}
+        onBlur={onBlurHandler}
+        onKeyPress={onKeyPressHandler}
+        onChange={onChangeHandler}
+        size="small"
+        variant="standard"
+        fullWidth
+      />
+    ) : (
+      <span {...props} onDoubleClick={onDoubleClickHandler}>
+        {title}
+      </span>
+    );
+  }
+);
