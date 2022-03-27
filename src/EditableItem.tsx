@@ -20,12 +20,7 @@ type EditableItemPropsType = DefaultSpanPropsType & {
 };
 
 export const EditableItem = memo(
-  ({
-    onDoubleClick,
-    title,
-    onChangeItemTitleCallback,
-    ...props
-  }: EditableItemPropsType) => {
+  ({ title, onChangeItemTitleCallback, ...props }: EditableItemPropsType) => {
     console.log('render EditableItem');
 
     const [isEditActive, setIsEditActive] = useState(false);

@@ -1,59 +1,61 @@
 import { DeleteOutline } from '@mui/icons-material';
 import { Checkbox, IconButton, ListItem, Typography } from '@mui/material';
 import React, { ChangeEvent, memo, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { EditableItem, OnChangeItemTitleCallback } from './EditableItem';
-import { RootStateType } from './store/state';
 import { tasksAC, TaskType } from './store/tasks-reducer';
 
 type TaskPropsType = {
-  id: string;
+  task: TaskType;
   todoListId: string;
   isLast: boolean;
 };
 
-export const Task = memo(({ id, ...props }: TaskPropsType) => {
-  console.log('render Task');
+export const Task = memo((props: TaskPropsType) => {
+  console.log('render Task', props);
 
-  const task = useSelector<RootStateType, TaskType>(
-    (state) => state.tasks[props.todoListId].find((t) => t.id === id)!
-  );
   const dispatch = useDispatch();
 
   const onChangeTaskStatusHandler = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       dispatch(
-        tasksAC.changeTaskStatus(props.todoListId, id, e.currentTarget.checked)
+        tasksAC.changeTaskStatus(
+          props.todoListId,
+          props.task.id,
+          e.currentTarget.checked
+        )
       );
     },
-    [dispatch, id, props.todoListId]
+    [dispatch, props.task.id, props.todoListId]
   );
 
   const onClickRemoveTaskHandler = useCallback(() => {
-    dispatch(tasksAC.removeTask(props.todoListId, id));
-  }, [dispatch, id, props.todoListId]);
+    dispatch(tasksAC.removeTask(props.todoListId, props.task.id));
+  }, [dispatch, props.task.id, props.todoListId]);
 
   const onChangeTitleCallback: OnChangeItemTitleCallback = useCallback(
     (title) => {
-      dispatch(tasksAC.changeTaskTitle(props.todoListId, id, title));
+      dispatch(tasksAC.changeTaskTitle(props.todoListId, props.task.id, title));
     },
-    [dispatch, props.todoListId, id]
+    [dispatch, props.todoListId, props.task.id]
   );
 
   return (
     <ListItem
-      key={id}
       divider
       {...{
         sx: { pl: 0, pr: 0, ...(props.isLast && { border: 'none' }) },
       }}
     >
-      <Checkbox checked={task.isDone} onChange={onChangeTaskStatusHandler} />
+      <Checkbox
+        checked={props.task.isDone}
+        onChange={onChangeTaskStatusHandler}
+      />
       <Typography component="div" sx={{ flexGrow: 1, wordBreak: 'break-all' }}>
         <EditableItem
-          title={task.title}
+          title={props.task.title}
           onChangeItemTitleCallback={onChangeTitleCallback}
-          className={task.isDone ? 'isDone' : ''}
+          className={props.task.isDone ? 'isDone' : ''}
         />
       </Typography>
       <IconButton onClick={onClickRemoveTaskHandler}>

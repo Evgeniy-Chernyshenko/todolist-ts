@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { Header } from './Header';
 import { Task } from './Task';
 import { AddItemForm } from './AddItemForm';
@@ -27,7 +27,7 @@ export type ChangeTodoListTitleCallbackType = (title: string) => void;
 export type OnAddItemCallbackType = (title: string) => void;
 
 export const TodoList = memo((props: TodoListPropsType) => {
-  console.log('render TodoList');
+  console.log('render TodoList', props);
 
   const todoList = useSelector<RootStateType, TodoListType>(
     (state) => state.todoLists.find((t) => t.id === props.id)!
@@ -37,13 +37,24 @@ export const TodoList = memo((props: TodoListPropsType) => {
   });
   const dispatch = useDispatch();
 
-  let filteredTasks = tasks;
-  if (props.filterValue === 'active') {
-    filteredTasks = tasks.filter((t) => !t.isDone);
-  }
-  if (props.filterValue === 'completed') {
-    filteredTasks = tasks.filter((t) => t.isDone);
-  }
+  // let filteredTasks = tasks;
+  // if (props.filterValue === 'active') {
+  //   filteredTasks = tasks.filter((t) => !t.isDone);
+  // }
+  // if (props.filterValue === 'completed') {
+  //   filteredTasks = tasks.filter((t) => t.isDone);
+  // }
+
+  const filteredTasks = useMemo(() => {
+    if (props.filterValue === 'active') {
+      return tasks.filter((t) => !t.isDone);
+    }
+    if (props.filterValue === 'completed') {
+      return tasks.filter((t) => t.isDone);
+    }
+
+    return tasks;
+  }, [tasks, props.filterValue]);
 
   const onClickFilterButtonCallback: OnClickFilterButtonCallbackType =
     useCallback(
@@ -97,7 +108,7 @@ export const TodoList = memo((props: TodoListPropsType) => {
               {filteredTasks.map((t, i) => (
                 <Task
                   key={t.id}
-                  id={t.id}
+                  task={t}
                   todoListId={props.id}
                   isLast={i === filteredTasks.length - 1}
                 />
